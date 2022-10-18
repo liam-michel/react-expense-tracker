@@ -35,6 +35,18 @@ exports.addTransaction = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
+    if (error.name === "ValidationError") {
+      const messages = Object.values(error.errors).map((val) => val.message);
+      return res.status(400).json({
+        success: false,
+        error: messages,
+      });
+    } else {
+      return res.status(500).json({
+        success: false,
+        error: "server error",
+      });
+    }
   }
 };
 
@@ -43,5 +55,24 @@ exports.addTransaction = async (req, res, next) => {
 // @access Public
 
 exports.deleteTransaction = async (req, res, next) => {
-  res.send("Delete transactions");
+  try {
+    const transaction = await Transaction.findById(req.params.id);
+    if (!transaction) {
+      return res.status(404).json({
+        success: false,
+        error: "User not found",
+      });
+    }
+
+    await transaction.remove();
+    res.status(200).json({
+      success: true,
+      data: {},
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: "server error",
+    });
+  }
 };
