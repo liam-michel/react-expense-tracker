@@ -7,8 +7,7 @@ const AddTransaction = (props: Props) => {
   const [text, setText] = useState("");
   const [amount, setAmount] = useState(0);
 
-  const { addTransaction, saveTransactions, transactions } =
-    useContext(GlobalContext);
+  const { addTransaction, transactions } = useContext(GlobalContext);
 
   const onSubmit = (e) => {
     e.preventDefault();
